@@ -30,6 +30,17 @@ function serviceHaystack(s: ServiceEntry): string {
     .toLowerCase();
 }
 
+/** Group client apps by `client`, preserving first-seen order. */
+function groupByClient(list: AppEntry[]): [string, AppEntry[]][] {
+  const map = new Map<string, AppEntry[]>();
+  for (const a of list) {
+    const key = a.client ?? 'Other Clients';
+    if (!map.has(key)) map.set(key, []);
+    map.get(key)!.push(a);
+  }
+  return [...map.entries()];
+}
+
 function Section({
   title,
   subtitle,
@@ -70,6 +81,11 @@ export default function App() {
     };
   }, [q]);
 
+  const operatingApps = filtered.apps.filter((a) => a.group === 'operating');
+  const clientGroups = groupByClient(
+    filtered.apps.filter((a) => a.group === 'client'),
+  );
+
   const count =
     filtered.apps.length +
     filtered.platforms.length +
@@ -80,21 +96,41 @@ export default function App() {
     <div className="min-h-dvh px-4 pb-24 max-w-6xl mx-auto">
       <SearchBar value={query} onChange={setQuery} count={count} />
 
-      <header className="pt-10 pb-2 flex items-start justify-between gap-4">
-        <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-default">
-            Design Innsæit
-          </p>
-          <h1 className="mt-1 text-4xl sm:text-6xl font-extrabold text-emphasis leading-[0.9] -tracking-[0.04em]">
-            Innsæit&nbsp;OS
-          </h1>
-          <p className="mt-3 max-w-xl text-subtle leading-relaxed">
-            One page to every app and console you run. A map, not a store —
-            <span className="text-emphasis"> zero secrets live here.</span> Real
-            credentials stay in Bitwarden.
-          </p>
+      <header className="pt-10">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-default">
+              Design Innsæit
+            </p>
+            <h1 className="mt-1 text-4xl sm:text-6xl font-extrabold text-emphasis leading-[0.9] -tracking-[0.04em]">
+              Innsæit&nbsp;OS
+            </h1>
+            <p className="mt-3 max-w-xl text-subtle leading-relaxed">
+              One page to every app and console you run. A map, not a store —
+              <span className="text-emphasis"> zero secrets live here.</span> Real
+              credentials stay in Bitwarden.
+            </p>
+          </div>
+          <ThemeToggle />
         </div>
-        <ThemeToggle />
+
+        {operatingApps.length > 0 && (
+          <div className="mt-8 rounded-2xl border border-brand-default/30 bg-subtle/60 p-5 sm:p-6">
+            <div className="mb-5 flex items-baseline gap-3">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-emphasis">
+                My Operating Apps
+              </h2>
+              <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-default">
+                daily drivers
+              </span>
+            </div>
+            <div className={GRID}>
+              {operatingApps.map((a) => (
+                <AppCard key={a.id} app={a} />
+              ))}
+            </div>
+          </div>
+        )}
       </header>
 
       {filtered.credentials.length > 0 && (
@@ -107,11 +143,20 @@ export default function App() {
         </Section>
       )}
 
-      {filtered.apps.length > 0 && (
-        <Section title="My Apps" subtitle={`${filtered.apps.length} live front-ends`}>
-          <div className={GRID}>
-            {filtered.apps.map((a) => (
-              <AppCard key={a.id} app={a} />
+      {clientGroups.length > 0 && (
+        <Section title="Client Portals" subtitle="by client">
+          <div className="flex flex-col gap-8">
+            {clientGroups.map(([client, list]) => (
+              <div key={client}>
+                <h3 className="mb-4 text-[11px] font-bold uppercase tracking-[0.18em] text-subtle">
+                  {client}
+                </h3>
+                <div className={GRID}>
+                  {list.map((a) => (
+                    <AppCard key={a.id} app={a} />
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </Section>

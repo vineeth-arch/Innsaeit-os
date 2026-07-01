@@ -15,11 +15,17 @@ export type Backend = {
 
 export type AppStatus = 'live' | 'wip' | 'moving';
 
+/** 'operating' = my own business tools (hero). 'client' = client-facing portals. */
+export type AppGroup = 'operating' | 'client';
+
 export type AppEntry = {
   id: string;
   name: string;
   description: string;
   category: 'App';
+  group: AppGroup;
+  /** Client name for grouping client portals, e.g. 'Avarta', 'Hamleys'. */
+  client?: string;
   frontendUrl: string;
   status?: AppStatus;
   backends: Backend[];

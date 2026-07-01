@@ -20,6 +20,7 @@ export const apps: AppEntry[] = [
     name: 'Outreach Cockpit',
     description: 'Cold outreach + pipeline command center.',
     category: 'App',
+    group: 'operating',
     frontendUrl: 'https://outreach.designinnsaeit.com',
     status: 'live',
     backends: [
@@ -35,6 +36,8 @@ export const apps: AppEntry[] = [
     name: 'Avarta Website',
     description: 'Avarta marketing site — migrating to the client domain.',
     category: 'App',
+    group: 'client',
+    client: 'Avarta',
     frontendUrl: 'https://avartawebsite.designinnsaeit.com',
     status: 'moving',
     backends: [
@@ -50,6 +53,8 @@ export const apps: AppEntry[] = [
     name: 'Avarta Brand Portal',
     description: 'Brand assets + guidelines portal for Avarta.',
     category: 'App',
+    group: 'client',
+    client: 'Avarta',
     frontendUrl: 'https://avarta.designinnsaeit.com',
     status: 'live',
     backends: [
@@ -64,6 +69,8 @@ export const apps: AppEntry[] = [
     name: 'Hamleys Packaging Portal',
     description: 'Packaging artwork + approvals portal for Hamleys.',
     category: 'App',
+    group: 'client',
+    client: 'Hamleys',
     frontendUrl: 'https://hamleys.designinnsaeit.com',
     status: 'live',
     backends: [
@@ -80,6 +87,8 @@ export const apps: AppEntry[] = [
     name: 'Packaging Portal (other clients)',
     description: 'Shared packaging portal for non-Hamleys clients.',
     category: 'App',
+    group: 'client',
+    client: 'Other Clients',
     frontendUrl: 'https://packaging.designinnsaeit.com',
     status: 'live',
     backends: [
@@ -96,6 +105,8 @@ export const apps: AppEntry[] = [
     name: 'Hamleys Tools',
     description: 'Quick-tools repository — shares the Hamleys portal backend.',
     category: 'App',
+    group: 'client',
+    client: 'Hamleys',
     frontendUrl: 'https://hamleys.designinnsaeit.com/tools',
     status: 'live',
     backends: [
@@ -113,6 +124,7 @@ export const apps: AppEntry[] = [
     name: 'GST Invoice Studio',
     description: 'GST-compliant invoicing for Indian billing.',
     category: 'App',
+    group: 'operating',
     frontendUrl: 'https://gstininvoice.designinnsaeit.com',
     status: 'live',
     backends: [
@@ -129,6 +141,7 @@ export const apps: AppEntry[] = [
     name: 'cal.diy Booking',
     description: 'Self-hosted appointment booking (Cal.com fork).',
     category: 'App',
+    group: 'operating',
     frontendUrl: 'https://appointments.designinnsaeit.com',
     status: 'live',
     backends: [
@@ -143,6 +156,7 @@ export const apps: AppEntry[] = [
     name: 'Prompt Library',
     description: 'Curated prompt collection (Claude artifact).',
     category: 'App',
+    group: 'operating',
     frontendUrl:
       'https://claude.ai/public/artifacts/bf165b4f-8ea5-40de-9f89-b31d3858d2fd',
     status: 'live',
