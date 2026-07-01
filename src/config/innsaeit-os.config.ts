@@ -1,0 +1,294 @@
+import type { AppEntry, ServiceEntry } from '../types';
+
+/**
+ * ┌─────────────────────────────────────────────────────────────────────┐
+ * │ Innsaeit OS — the ONE file you edit.                                  │
+ * │                                                                       │
+ * │ SECURITY: this file holds ZERO secrets. Names, URLs, deep links,      │
+ * │ tags, notes, and Bitwarden ITEM NAMES only. Never paste a password,   │
+ * │ API key, token, or service-role key here. Real credentials live in    │
+ * │ Bitwarden — this app only links to login / key-rotation pages.        │
+ * │                                                                       │
+ * │ Some dashboard/key URLs rebrand over time — all are easy to edit.     │
+ * │ `<< fill in >>` placeholders: replace with your real URL.             │
+ * └─────────────────────────────────────────────────────────────────────┘
+ */
+
+export const apps: AppEntry[] = [
+  {
+    id: 'outreach-cockpit',
+    name: 'Outreach Cockpit',
+    description: 'Cold outreach + pipeline command center.',
+    category: 'App',
+    frontendUrl: 'https://outreach.designinnsaeit.com',
+    status: 'live',
+    backends: [
+      { label: 'Supabase (2nd acct)', url: 'https://supabase.com/dashboard/projects', type: 'supabase' },
+      { label: 'Vercel', url: 'https://vercel.com/dashboard', type: 'vercel' },
+      { label: 'Cloudflare DNS', url: 'https://dash.cloudflare.com', type: 'dns' },
+    ],
+    stack: ['Vite', 'React', 'Supabase', 'Vercel'],
+    bitwardenItem: 'Outreach Cockpit',
+  },
+  {
+    id: 'avarta-website',
+    name: 'Avarta Website',
+    description: 'Avarta marketing site — migrating to the client domain.',
+    category: 'App',
+    frontendUrl: 'https://avartawebsite.designinnsaeit.com',
+    status: 'moving',
+    backends: [
+      { label: 'Vercel', url: 'https://vercel.com/dashboard', type: 'vercel' },
+      { label: 'Cloudflare DNS', url: 'https://dash.cloudflare.com', type: 'dns' },
+    ],
+    stack: ['Vite', 'React', 'Vercel'],
+    notes: 'Moving to client-owned domain — update DNS + Vercel domain when cut over.',
+    bitwardenItem: 'Avarta',
+  },
+  {
+    id: 'avarta-brand-portal',
+    name: 'Avarta Brand Portal',
+    description: 'Brand assets + guidelines portal for Avarta.',
+    category: 'App',
+    frontendUrl: 'https://avarta.designinnsaeit.com',
+    status: 'live',
+    backends: [
+      { label: 'Vercel', url: 'https://vercel.com/dashboard', type: 'vercel' },
+      { label: 'Cloudflare DNS', url: 'https://dash.cloudflare.com', type: 'dns' },
+    ],
+    stack: ['Vite', 'React', 'Vercel'],
+    bitwardenItem: 'Avarta',
+  },
+  {
+    id: 'hamleys-packaging-portal',
+    name: 'Hamleys Packaging Portal',
+    description: 'Packaging artwork + approvals portal for Hamleys.',
+    category: 'App',
+    frontendUrl: 'https://hamleys.designinnsaeit.com',
+    status: 'live',
+    backends: [
+      { label: 'Supabase', url: 'https://supabase.com/dashboard/projects', type: 'supabase' },
+      { label: 'Vercel', url: 'https://vercel.com/dashboard', type: 'vercel' },
+      { label: 'Cloudflare R2', url: 'https://dash.cloudflare.com', type: 'r2' },
+      { label: 'Cloudflare DNS', url: 'https://dash.cloudflare.com', type: 'dns' },
+    ],
+    stack: ['Vite', 'React', 'Supabase', 'R2', 'Vercel'],
+    bitwardenItem: 'Hamleys Portal',
+  },
+  {
+    id: 'packaging-portal',
+    name: 'Packaging Portal (other clients)',
+    description: 'Shared packaging portal for non-Hamleys clients.',
+    category: 'App',
+    frontendUrl: 'https://packaging.designinnsaeit.com',
+    status: 'live',
+    backends: [
+      { label: 'Supabase', url: 'https://supabase.com/dashboard/projects', type: 'supabase' },
+      { label: 'Vercel', url: 'https://vercel.com/dashboard', type: 'vercel' },
+      { label: 'Cloudflare R2', url: 'https://dash.cloudflare.com', type: 'r2' },
+      { label: 'Cloudflare DNS', url: 'https://dash.cloudflare.com', type: 'dns' },
+    ],
+    stack: ['Vite', 'React', 'Supabase', 'R2', 'Vercel'],
+    bitwardenItem: 'Packaging Portal',
+  },
+  {
+    id: 'hamleys-tools',
+    name: 'Hamleys Tools',
+    description: 'Quick-tools repository — shares the Hamleys portal backend.',
+    category: 'App',
+    frontendUrl: 'https://hamleys.designinnsaeit.com/tools',
+    status: 'live',
+    backends: [
+      { label: 'Supabase', url: 'https://supabase.com/dashboard/projects', type: 'supabase' },
+      { label: 'Vercel', url: 'https://vercel.com/dashboard', type: 'vercel' },
+      { label: 'Cloudflare R2', url: 'https://dash.cloudflare.com', type: 'r2' },
+      { label: 'Cloudflare DNS', url: 'https://dash.cloudflare.com', type: 'dns' },
+    ],
+    stack: ['Vite', 'React', 'Supabase', 'Vercel'],
+    notes: 'Same backend as the Hamleys Packaging Portal.',
+    bitwardenItem: 'Hamleys Portal',
+  },
+  {
+    id: 'gst-invoice-studio',
+    name: 'GST Invoice Studio',
+    description: 'GST-compliant invoicing for Indian billing.',
+    category: 'App',
+    frontendUrl: 'https://gstininvoice.designinnsaeit.com',
+    status: 'live',
+    backends: [
+      { label: 'Supabase (optional sync)', url: 'https://supabase.com/dashboard/projects', type: 'supabase' },
+      { label: 'Vercel', url: 'https://vercel.com/dashboard', type: 'vercel' },
+      { label: 'Cloudflare DNS', url: 'https://dash.cloudflare.com', type: 'dns' },
+    ],
+    stack: ['Vite', 'React', 'Vercel'],
+    notes: 'Supabase sync is optional — works local-first.',
+    bitwardenItem: 'GST Invoice Studio',
+  },
+  {
+    id: 'caldiy-booking',
+    name: 'cal.diy Booking',
+    description: 'Self-hosted appointment booking (Cal.com fork).',
+    category: 'App',
+    frontendUrl: 'https://appointments.designinnsaeit.com',
+    status: 'live',
+    backends: [
+      { label: 'Railway (web + API v2 + Redis)', url: 'https://railway.com/dashboard', type: 'railway' },
+      { label: 'Cloudflare DNS', url: 'https://dash.cloudflare.com', type: 'dns' },
+    ],
+    stack: ['Next.js', 'Railway', 'Redis'],
+    bitwardenItem: 'cal.diy',
+  },
+  {
+    id: 'prompt-library',
+    name: 'Prompt Library',
+    description: 'Curated prompt collection (Claude artifact).',
+    category: 'App',
+    frontendUrl:
+      'https://claude.ai/public/artifacts/bf165b4f-8ea5-40de-9f89-b31d3858d2fd',
+    status: 'live',
+    backends: [],
+    stack: ['Claude Artifact'],
+    notes: 'No backend — static Claude artifact.',
+  },
+];
+
+export const platforms: ServiceEntry[] = [
+  {
+    id: 'cloudflare',
+    name: 'Cloudflare',
+    description: 'DNS + R2 object storage for all apps.',
+    category: 'Platform',
+    dashboardUrl: 'https://dash.cloudflare.com',
+    notes: 'DNS zones + R2 buckets live here.',
+    bitwardenItem: 'Cloudflare',
+  },
+  {
+    id: 'cloudflare-registrar',
+    name: 'Cloudflare Registrar',
+    description: 'Primary domain registrar.',
+    category: 'Platform',
+    dashboardUrl: 'https://dash.cloudflare.com/?to=/:account/domains/register',
+    notes: 'Primary registrar — domain registration + renewals.',
+    bitwardenItem: 'Cloudflare',
+  },
+  {
+    id: 'godaddy',
+    name: 'GoDaddy',
+    description: 'Secondary domain registrar.',
+    category: 'Platform',
+    dashboardUrl: 'https://dcc.godaddy.com/domains',
+    notes: 'Secondary registrar — legacy domains.',
+    bitwardenItem: 'GoDaddy',
+  },
+  {
+    id: 'railway',
+    name: 'Railway',
+    description: 'Hosting for cal.diy (web + API + Redis).',
+    category: 'Platform',
+    dashboardUrl: 'https://railway.com/dashboard',
+    bitwardenItem: 'Railway',
+  },
+  {
+    id: 'supabase',
+    name: 'Supabase',
+    description: 'All Postgres/DB dashboards.',
+    category: 'Platform',
+    dashboardUrl: 'https://supabase.com/dashboard/projects',
+    notes: 'Multiple accounts — check the right org.',
+    bitwardenItem: 'Supabase',
+  },
+  {
+    id: 'vercel',
+    name: 'Vercel',
+    description: 'All front-end deploys.',
+    category: 'Platform',
+    dashboardUrl: 'https://vercel.com/dashboard',
+    bitwardenItem: 'Vercel',
+  },
+  {
+    id: 'n8n',
+    name: 'n8n',
+    description: 'Self-hosted automation (behind Cloudflare Tunnel).',
+    category: 'Platform',
+    dashboardUrl: 'https://n8n.example.com',
+    notes: '<< fill in >> — replace with your Cloudflare Tunnel URL.',
+    bitwardenItem: 'n8n',
+  },
+  {
+    id: 'ntfy',
+    name: 'ntfy',
+    description: 'Self-hosted push notifications.',
+    category: 'Platform',
+    dashboardUrl: 'https://ntfy.example.com',
+    notes: '<< fill in >> — replace with your ntfy URL.',
+    bitwardenItem: 'ntfy',
+  },
+];
+
+export const apiProviders: ServiceEntry[] = [
+  {
+    id: 'anthropic',
+    name: 'Anthropic',
+    description: 'Claude API.',
+    category: 'API Provider',
+    dashboardUrl: 'https://console.anthropic.com',
+    keyRotationUrl: 'https://console.anthropic.com/settings/keys',
+    bitwardenItem: 'Anthropic API',
+  },
+  {
+    id: 'openai',
+    name: 'OpenAI',
+    description: 'GPT + embeddings API.',
+    category: 'API Provider',
+    dashboardUrl: 'https://platform.openai.com',
+    keyRotationUrl: 'https://platform.openai.com/api-keys',
+    bitwardenItem: 'OpenAI API',
+  },
+  {
+    id: 'gemini',
+    name: 'Google Gemini (AI Studio)',
+    description: 'Gemini API via Google AI Studio.',
+    category: 'API Provider',
+    dashboardUrl: 'https://aistudio.google.com',
+    keyRotationUrl: 'https://aistudio.google.com/apikey',
+    bitwardenItem: 'Google Gemini API',
+  },
+  {
+    id: 'groq',
+    name: 'Groq',
+    description: 'Fast inference API.',
+    category: 'API Provider',
+    dashboardUrl: 'https://console.groq.com',
+    keyRotationUrl: 'https://console.groq.com/keys',
+    bitwardenItem: 'Groq API',
+  },
+  {
+    id: 'openrouter',
+    name: 'OpenRouter',
+    description: 'Unified multi-model API gateway.',
+    category: 'API Provider',
+    dashboardUrl: 'https://openrouter.ai',
+    keyRotationUrl: 'https://openrouter.ai/keys',
+    bitwardenItem: 'OpenRouter API',
+  },
+  {
+    id: 'resend',
+    name: 'Resend',
+    description: 'Transactional email API.',
+    category: 'API Provider',
+    dashboardUrl: 'https://resend.com',
+    keyRotationUrl: 'https://resend.com/api-keys',
+    bitwardenItem: 'Resend API',
+  },
+];
+
+export const credentials: ServiceEntry[] = [
+  {
+    id: 'bitwarden',
+    name: 'Bitwarden Vault',
+    description: 'All passwords + API keys stored here.',
+    category: 'Credentials',
+    dashboardUrl: 'https://vault.bitwarden.com',
+    notes: 'Single source of truth for every secret. This app never stores any.',
+  },
+];

@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-ink text-text font-body antialiased;
+    background-image:
+      radial-gradient(60rem 40rem at 85% -10%, rgba(44, 0, 152, 0.55), transparent 60%),
+      radial-gradient(50rem 40rem at -10% 10%, rgba(0, 255, 207, 0.06), transparent 55%);
+    background-attachment: fixed;
+    min-height: 100dvh;
+  }
+
+  ::selection {
+    background: #00ffcf;
+    color: #0d0035;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display tracking-tightest;
+  }
+}
+
+@layer components {
+  /* Every tappable link/button clears the 44px mobile target. */
+  .tap {
+    @apply min-h-[44px] inline-flex items-center gap-1.5;
+  }
+}
