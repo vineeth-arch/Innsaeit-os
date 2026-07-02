@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useMemo } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   apps,
   tools,
@@ -11,8 +11,6 @@ import { toolsRegistry } from './config/tools-registry.config';
 import type { AppEntry, ServiceEntry, ToolEntry, ToolHubEntry } from './types';
 import AppCard from './components/AppCard';
 import ServiceCard from './components/ServiceCard';
-import SearchBar from './components/SearchBar';
-import ThemeToggle from './components/ThemeToggle';
 
 function appHaystack(a: AppEntry): string {
   return [
@@ -140,7 +138,8 @@ const GRID = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4';
 const REGISTRY_HIT_CAP = 6;
 
 export default function Launcher() {
-  const [query, setQuery] = useState('');
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get('q') ?? '';
   const q = query.trim().toLowerCase();
 
   const filtered = useMemo(() => {
@@ -174,24 +173,19 @@ export default function Launcher() {
 
   return (
     <div className="min-h-dvh px-4 pb-24 max-w-6xl mx-auto">
-      <SearchBar value={query} onChange={setQuery} count={count} />
-
       <header className="pt-10">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-default">
-              Design Innsæit
-            </p>
-            <h1 className="mt-1 text-4xl sm:text-6xl font-extrabold text-emphasis leading-[0.9] -tracking-[0.04em]">
-              Innsæit&nbsp;OS
-            </h1>
-            <p className="mt-3 max-w-xl text-subtle leading-relaxed">
-              One page to every app and console you run. A map, not a store —
-              <span className="text-emphasis"> zero secrets live here.</span> Real
-              credentials stay in Bitwarden.
-            </p>
-          </div>
-          <ThemeToggle />
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-default">
+            Design Innsæit
+          </p>
+          <h1 className="mt-1 text-4xl sm:text-6xl font-extrabold text-emphasis leading-[0.9] -tracking-[0.04em]">
+            Innsæit&nbsp;OS
+          </h1>
+          <p className="mt-3 max-w-xl text-subtle leading-relaxed">
+            One page to every app and console you run. A map, not a store —
+            <span className="text-emphasis"> zero secrets live here.</span> Real
+            credentials stay in Bitwarden.
+          </p>
         </div>
 
         {operatingApps.length > 0 && (

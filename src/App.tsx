@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import AppShell from './components/AppShell';
 import Launcher from './Launcher';
 
 const CompressPage = lazy(() => import('./tools/pages/CompressPage'));
@@ -18,8 +19,13 @@ export default function App() {
   return (
     <Suspense fallback={null}>
       <Routes>
-        <Route path="/" element={<Launcher />} />
-        <Route path="/tools" element={<ToolHubPage />} />
+        {/* Home + Tool Hub share the persistent tab/search/theme shell. */}
+        <Route element={<AppShell />}>
+          <Route path="/" element={<Launcher />} />
+          <Route path="/tools" element={<ToolHubPage />} />
+        </Route>
+
+        {/* Individual tool pages are focused single-tool views — no shell. */}
         <Route path="/tools/compress" element={<CompressPage />} />
         <Route path="/tools/vectorize" element={<VectorizePage />} />
         <Route path="/tools/palette" element={<PalettePage />} />
@@ -30,6 +36,7 @@ export default function App() {
         <Route path="/tools/bleed" element={<BleedCalculatorPage />} />
         <Route path="/tools/batch-resize" element={<BatchResizePage />} />
         <Route path="/tools/gs1" element={<Gs1ValidatorPage />} />
+
         <Route path="/tools/lab" element={<Navigate to="/tools" replace />} />
         <Route path="/resources/delphitools" element={<Navigate to="/tools" replace />} />
       </Routes>

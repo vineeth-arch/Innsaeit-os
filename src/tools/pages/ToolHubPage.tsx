@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import ToolLayout from '../components/ToolLayout';
 import { toolsRegistry, TOOL_CATEGORIES } from '../../config/tools-registry.config';
 import type { ToolHubEntry, ToolSource, ToolStatus } from '../../types';
 
@@ -128,28 +127,15 @@ function ToolCard({ entry }: { entry: ToolHubEntry }) {
 
 export default function ToolHubPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [query, setQuery] = useState(searchParams.get('q') ?? '');
+  const query = searchParams.get('q') ?? '';
   const [filter, setFilter] = useState<Filter>('all');
-  const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    const next = new URLSearchParams(searchParams);
-    if (query) next.set('q', query);
-    else next.delete('q');
-    setSearchParams(next, { replace: true });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query]);
-
-  useEffect(() => {
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === '/' && document.activeElement !== inputRef.current) {
-        e.preventDefault();
-        inputRef.current?.focus();
-      }
-    }
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, []);
+  function setQuery(next: string) {
+    const params = new URLSearchParams(searchParams);
+    if (next) params.set('q', next);
+    else params.delete('q');
+    setSearchParams(params, { replace: true });
+  }
 
   const q = query.trim().toLowerCase();
 
@@ -161,21 +147,21 @@ export default function ToolHubPage() {
   const backlog = filtered.filter((t) => t.status === 'backlog').sort((a, b) => (a.effort ?? 0) - (b.effort ?? 0));
 
   return (
-    <ToolLayout
-      title="Tool Hub"
-      subtitle="Every agency utility in one searchable place — built here, on Delphi, open source, or on the backlog."
-    >
-      <div className="flex flex-col gap-3">
-        <input
-          ref={inputRef}
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search tools… press / to focus, e.g. compress pdf, make barcode"
-          aria-label="Search Tool Hub"
-          className="w-full min-h-[44px] px-4 rounded-xl bg-subtle border border-subtle text-emphasis placeholder:text-muted outline-none focus:border-brand-default focus:ring-2 focus:ring-brand-default/30 transition"
-        />
+    <div className="min-h-dvh px-4 pb-24 max-w-6xl mx-auto">
+      <header className="pt-10">
+        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-default">
+          Design Innsæit
+        </p>
+        <h1 className="mt-1 text-3xl sm:text-5xl font-extrabold text-emphasis leading-[0.95] -tracking-[0.02em]">
+          Tool Hub
+        </h1>
+        <p className="mt-3 max-w-xl text-subtle leading-relaxed">
+          Every agency utility in one searchable place — built here, on Delphi, open source, or on
+          the backlog.
+        </p>
+      </header>
 
+      <div className="mt-8 flex flex-col gap-3">
         <div className="flex flex-wrap gap-2">
           {EXAMPLE_CHIPS.map((chip) => (
             <button
@@ -213,35 +199,39 @@ export default function ToolHubPage() {
         </div>
       </div>
 
-      {browseGroups.length === 0 && backlog.length === 0 && (
-        <p className="mt-4 text-center text-muted">No tools match “{query}”.</p>
-      )}
+      <div className="mt-8 flex flex-col gap-6">
+        {browseGroups.length === 0 && backlog.length === 0 && (
+          <p className="mt-4 text-center text-muted">No tools match “{query}”.</p>
+        )}
 
-      <div className="flex flex-col gap-8">
-        {browseGroups.map(([category, list]) => (
-          <div key={category}>
-            <h2 className="mb-4 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-default">{category}</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {list.map((entry) => (
+        <div className="flex flex-col gap-8">
+          {browseGroups.map(([category, list]) => (
+            <div key={category}>
+              <h2 className="mb-4 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-default">
+                {category}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {list.map((entry) => (
+                  <ToolCard key={entry.id} entry={entry} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {backlog.length > 0 && (
+          <details className="rounded-xl border border-subtle bg-subtle/40 p-5">
+            <summary className="cursor-pointer text-[11px] font-bold uppercase tracking-[0.18em] text-muted">
+              Backlog ({backlog.length}) — ranked by build effort
+            </summary>
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {backlog.map((entry) => (
                 <ToolCard key={entry.id} entry={entry} />
               ))}
             </div>
-          </div>
-        ))}
+          </details>
+        )}
       </div>
-
-      {backlog.length > 0 && (
-        <details className="rounded-xl border border-subtle bg-subtle/40 p-5">
-          <summary className="cursor-pointer text-[11px] font-bold uppercase tracking-[0.18em] text-muted">
-            Backlog ({backlog.length}) — ranked by build effort
-          </summary>
-          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {backlog.map((entry) => (
-              <ToolCard key={entry.id} entry={entry} />
-            ))}
-          </div>
-        </details>
-      )}
-    </ToolLayout>
+    </div>
   );
 }
