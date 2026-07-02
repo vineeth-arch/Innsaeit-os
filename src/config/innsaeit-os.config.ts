@@ -1,4 +1,4 @@
-import type { AppEntry, ServiceEntry } from '../types';
+import type { AppEntry, ServiceEntry, ToolEntry } from '../types';
 
 /**
  * ┌─────────────────────────────────────────────────────────────────────┐
@@ -181,6 +181,44 @@ export const apps: AppEntry[] = [
     stack: ['Nuxt', 'Vue', 'Cloudflare Workers'],
     notes: 'Sink — self-hosted link shortener, 100% on Cloudflare.',
     bitwardenItem: 'URL Shortener',
+  },
+];
+
+export const tools: ToolEntry[] = [
+  {
+    id: 'compress',
+    name: 'Compress & Convert',
+    description: 'Shrink and convert images between WebP / JPG / PNG / AVIF.',
+    route: '/tools/compress',
+    badge: 'Runs in your browser',
+  },
+  {
+    id: 'vectorize',
+    name: 'Vectorize',
+    description: 'Trace logos & line art from raster into SVG.',
+    route: '/tools/vectorize',
+    badge: 'Runs in your browser',
+  },
+  {
+    id: 'palette',
+    name: 'Palette from Image',
+    description: 'Extract brand swatches from a moodboard or photo.',
+    route: '/tools/palette',
+    badge: 'Runs in your browser',
+  },
+  {
+    id: 'codes',
+    name: 'QR & Barcode',
+    description: 'Generate QR codes and retail barcodes (EAN / UPC / Code 128).',
+    route: '/tools/codes',
+    badge: 'Runs in your browser',
+  },
+  {
+    id: 'case-converter',
+    name: 'Case Converter',
+    description: 'lower, UPPER, Title, camelCase, snake_case & more.',
+    route: '/tools/case',
+    badge: 'Runs in your browser',
   },
 ];
 

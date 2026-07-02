@@ -50,4 +50,13 @@ export type ServiceEntry = {
   bitwardenItem?: string;
 };
 
-export type AnyEntry = AppEntry | ServiceEntry;
+export type ToolEntry = {
+  id: string;
+  name: string;
+  description: string;
+  /** Internal route, e.g. '/tools/compress'. */
+  route: string;
+  badge?: string;
+};
+
+export type AnyEntry = AppEntry | ServiceEntry | ToolEntry;
