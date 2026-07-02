@@ -164,6 +164,24 @@ export const apps: AppEntry[] = [
     stack: ['Claude Artifact'],
     notes: 'No backend — static Claude artifact.',
   },
+  {
+    id: 'url-shortener',
+    name: 'URL Shortener',
+    description: 'Branded short links + click analytics (Sink).',
+    category: 'App',
+    group: 'operating',
+    frontendUrl: 'https://go.designinnsaeit.com/dashboard/',
+    status: 'live',
+    backends: [
+      { label: 'Cloudflare Workers', url: 'https://dash.cloudflare.com', type: 'cloudflare' },
+      { label: 'KV + Analytics', url: 'https://dash.cloudflare.com', type: 'cloudflare' },
+      { label: 'Cloudflare R2', url: 'https://dash.cloudflare.com', type: 'r2' },
+      { label: 'Cloudflare DNS', url: 'https://dash.cloudflare.com', type: 'dns' },
+    ],
+    stack: ['Nuxt', 'Vue', 'Cloudflare Workers'],
+    notes: 'Sink — self-hosted link shortener, 100% on Cloudflare.',
+    bitwardenItem: 'URL Shortener',
+  },
 ];
 
 export const platforms: ServiceEntry[] = [
