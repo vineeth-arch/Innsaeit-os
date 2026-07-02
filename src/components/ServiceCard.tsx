@@ -1,4 +1,5 @@
 import type { ServiceEntry } from '../types';
+import { trackClick } from '../lib/usage';
 import AddToBitwarden from './AddToBitwarden';
 
 export default function ServiceCard({ service }: { service: ServiceEntry }) {
@@ -17,6 +18,7 @@ export default function ServiceCard({ service }: { service: ServiceEntry }) {
           href={service.dashboardUrl}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => trackClick(service.id)}
           className="tap justify-center w-full px-4 py-3 rounded-xl bg-brand-default text-brand font-extrabold hover:bg-brand-emphasis transition-colors"
         >
           🔓 Open Bitwarden Vault ↗
@@ -37,6 +39,7 @@ export default function ServiceCard({ service }: { service: ServiceEntry }) {
         href={service.dashboardUrl}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => trackClick(service.id)}
         className="tap justify-center w-full px-4 py-2.5 rounded-xl bg-brand-default text-brand font-bold text-sm hover:bg-brand-emphasis transition-colors"
       >
         {isApiProvider ? 'Open console ↗' : 'Open dashboard ↗'}

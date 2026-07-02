@@ -9,6 +9,7 @@ import {
 } from './config/innsaeit-os.config';
 import { toolsRegistry } from './config/tools-registry.config';
 import type { AppEntry, ServiceEntry, ToolEntry, ToolHubEntry } from './types';
+import { trackClick } from './lib/usage';
 import AppCard from './components/AppCard';
 import ServiceCard from './components/ServiceCard';
 
@@ -95,14 +96,14 @@ function ToolCard({ tool }: { tool: ToolEntry }) {
 
   if (tool.url) {
     return (
-      <a href={tool.url} target="_blank" rel="noopener noreferrer" className={className}>
+      <a href={tool.url} target="_blank" rel="noopener noreferrer" onClick={() => trackClick(tool.id)} className={className}>
         {body}
       </a>
     );
   }
 
   return (
-    <Link to={tool.route!} className={className}>
+    <Link to={tool.route!} onClick={() => trackClick(tool.id)} className={className}>
       {body}
     </Link>
   );
@@ -119,14 +120,14 @@ function RegistryHitCard({ entry }: { entry: ToolHubEntry }) {
   );
   if (entry.status === 'built' && entry.route) {
     return (
-      <Link to={entry.route} className={className}>
+      <Link to={entry.route} onClick={() => trackClick(entry.id)} className={className}>
         {body}
       </Link>
     );
   }
   if (entry.url) {
     return (
-      <a href={entry.url} target="_blank" rel="noopener noreferrer" className={className}>
+      <a href={entry.url} target="_blank" rel="noopener noreferrer" onClick={() => trackClick(entry.id)} className={className}>
         {body}
       </a>
     );

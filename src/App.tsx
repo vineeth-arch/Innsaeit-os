@@ -27,6 +27,11 @@ const ShadesPage = lazy(() => import('./tools/pages/ShadesPage'));
 const TypeScalePage = lazy(() => import('./tools/pages/TypeScalePage'));
 const JsonPage = lazy(() => import('./tools/pages/JsonPage'));
 const PaperPage = lazy(() => import('./tools/pages/PaperPage'));
+const QrBrandedPage = lazy(() => import('./tools/pages/QrBrandedPage'));
+const StickerSheetPage = lazy(() => import('./tools/pages/StickerSheetPage'));
+const QrBulkPage = lazy(() => import('./tools/pages/QrBulkPage'));
+const LogoExportPage = lazy(() => import('./tools/pages/LogoExportPage'));
+const IllustratorExportPage = lazy(() => import('./tools/pages/IllustratorExportPage'));
 
 export default function App() {
   return (
@@ -62,6 +67,11 @@ export default function App() {
         <Route path="/tools/typescale" element={<TypeScalePage />} />
         <Route path="/tools/json" element={<JsonPage />} />
         <Route path="/tools/paper" element={<PaperPage />} />
+        <Route path="/tools/qr-branded" element={<QrBrandedPage />} />
+        <Route path="/tools/sticker-sheet" element={<StickerSheetPage />} />
+        <Route path="/tools/qr-bulk" element={<QrBulkPage />} />
+        <Route path="/tools/logo-export" element={<LogoExportPage />} />
+        <Route path="/tools/illustrator-export" element={<IllustratorExportPage />} />
 
         <Route path="/tools/lab" element={<Navigate to="/tools" replace />} />
         <Route path="/resources/delphitools" element={<Navigate to="/tools" replace />} />

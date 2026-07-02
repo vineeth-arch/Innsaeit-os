@@ -1,4 +1,5 @@
 import type { AppEntry, AppStatus } from '../types';
+import { trackClick } from '../lib/usage';
 import BackendChip from './BackendChip';
 import AddToBitwarden from './AddToBitwarden';
 
@@ -30,6 +31,7 @@ export default function AppCard({ app }: { app: AppEntry }) {
         href={app.frontendUrl}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => trackClick(app.id)}
         className="tap justify-center w-full px-4 py-2.5 rounded-xl bg-brand-default text-brand font-bold text-sm hover:bg-brand-emphasis transition-colors"
       >
         Open app ↗

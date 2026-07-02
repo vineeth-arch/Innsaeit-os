@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { toolsRegistry, TOOL_CATEGORIES } from '../../config/tools-registry.config';
 import type { ToolHubEntry, ToolSource, ToolStatus } from '../../types';
+import { getUsage, trackClick } from '../../lib/usage';
 
 const EXAMPLE_CHIPS = ['compress pdf', 'make barcode', 'remove background', 'calculate 3mm bleed'];
 
@@ -61,7 +62,7 @@ function StatusPill({ entry }: { entry: ToolHubEntry }) {
   );
 }
 
-function ToolCardBody({ entry }: { entry: ToolHubEntry }) {
+function ToolCardBody({ entry, count }: { entry: ToolHubEntry; count: number }) {
   return (
     <>
       <div className="flex items-start justify-between gap-3">
@@ -69,20 +70,26 @@ function ToolCardBody({ entry }: { entry: ToolHubEntry }) {
         <StatusPill entry={entry} />
       </div>
       <p className="text-sm text-subtle leading-relaxed">{entry.description}</p>
+      {count > 0 && <span className="text-[11px] text-muted">· used {count}×</span>}
     </>
   );
 }
 
-function ToolCard({ entry }: { entry: ToolHubEntry }) {
+function ToolCard({ entry, count }: { entry: ToolHubEntry; count: number }) {
   if (entry.status === 'built' && entry.route) {
     // "Stretched link" pattern: the Link is an invisible full-card overlay so the
     // whole card is clickable, while altUrl renders as its own real (non-nested)
     // <a> above it — anchors can't nest, so the primary link can't wrap it.
     return (
       <div className="relative flex flex-col gap-2 rounded-xl border border-subtle bg-subtle p-4 hover:border-brand-default transition-colors">
-        <Link to={entry.route} className="absolute inset-0 rounded-xl" aria-label={entry.name} />
+        <Link
+          to={entry.route}
+          onClick={() => trackClick(entry.id)}
+          className="absolute inset-0 rounded-xl"
+          aria-label={entry.name}
+        />
         <div className="pointer-events-none flex flex-col gap-2">
-          <ToolCardBody entry={entry} />
+          <ToolCardBody entry={entry} count={count} />
           <div className="mt-auto flex items-center justify-between gap-2">
             <span className="text-xs font-semibold text-brand-default">Open →</span>
             {entry.altUrl && (
@@ -107,9 +114,10 @@ function ToolCard({ entry }: { entry: ToolHubEntry }) {
         href={entry.url}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => trackClick(entry.id)}
         className="flex flex-col gap-2 rounded-xl border border-subtle bg-subtle p-4 hover:border-emphasis transition-colors"
       >
-        <ToolCardBody entry={entry} />
+        <ToolCardBody entry={entry} count={count} />
         <span className="mt-auto text-xs font-semibold text-subtle">Open ↗</span>
       </a>
     );
@@ -117,7 +125,7 @@ function ToolCard({ entry }: { entry: ToolHubEntry }) {
 
   return (
     <article className="flex flex-col gap-2 rounded-xl border border-subtle bg-subtle/60 p-4 opacity-70">
-      <ToolCardBody entry={entry} />
+      <ToolCardBody entry={entry} count={count} />
       <span className="mt-auto text-xs text-muted">
         On the roadmap{entry.effort ? ` · build effort ${entry.effort}/5` : ''}
         {entry.needs === 'compute' ? ' · needs a backend' : ''}
@@ -130,6 +138,7 @@ export default function ToolHubPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('q') ?? '';
   const [filter, setFilter] = useState<Filter>('all');
+  const [sort, setSort] = useState<'relevance' | 'used'>('relevance');
 
   function setQuery(next: string) {
     const params = new URLSearchParams(searchParams);
@@ -139,13 +148,21 @@ export default function ToolHubPage() {
   }
 
   const q = query.trim().toLowerCase();
+  // Read usage once per render — it's a tiny localStorage map.
+  const usage = getUsage();
 
   const filtered = useMemo(() => {
     return toolsRegistry.filter((t) => matchesFilter(t, filter) && (!q || haystack(t).includes(q)));
   }, [q, filter]);
 
-  const browseGroups = groupByCategory(filtered.filter((t) => t.status !== 'backlog'));
-  const backlog = filtered.filter((t) => t.status === 'backlog').sort((a, b) => (a.effort ?? 0) - (b.effort ?? 0));
+  const byUsed = (a: ToolHubEntry, b: ToolHubEntry) => (usage[b.id] ?? 0) - (usage[a.id] ?? 0);
+
+  const browseGroups = groupByCategory(filtered.filter((t) => t.status !== 'backlog')).map(
+    ([cat, list]) => [cat, sort === 'used' ? [...list].sort(byUsed) : list] as [string, ToolHubEntry[]],
+  );
+  const backlog = filtered
+    .filter((t) => t.status === 'backlog')
+    .sort(sort === 'used' ? byUsed : (a, b) => (a.effort ?? 0) - (b.effort ?? 0));
 
   return (
     <div className="min-h-dvh px-4 pb-24 max-w-6xl mx-auto">
@@ -183,7 +200,7 @@ export default function ToolHubPage() {
           )}
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {FILTERS.map((f) => (
             <button
               key={f.key}
@@ -195,6 +212,20 @@ export default function ToolHubPage() {
               }`}
             >
               {f.label}
+            </button>
+          ))}
+          <span className="ml-auto text-[11px] font-bold uppercase tracking-[0.08em] text-muted">Sort</span>
+          {(['relevance', 'used'] as const).map((s) => (
+            <button
+              key={s}
+              onClick={() => setSort(s)}
+              className={`tap px-3 rounded-full text-xs font-bold border transition-colors ${
+                sort === s
+                  ? 'bg-brand-default text-brand border-brand-default'
+                  : 'border-subtle text-subtle hover:border-brand-default hover:text-brand-default'
+              }`}
+            >
+              {s === 'relevance' ? 'Relevance' : 'Most used'}
             </button>
           ))}
         </div>
@@ -213,7 +244,7 @@ export default function ToolHubPage() {
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {list.map((entry) => (
-                  <ToolCard key={entry.id} entry={entry} />
+                  <ToolCard key={entry.id} entry={entry} count={usage[entry.id] ?? 0} />
                 ))}
               </div>
             </div>
@@ -227,7 +258,7 @@ export default function ToolHubPage() {
             </summary>
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {backlog.map((entry) => (
-                <ToolCard key={entry.id} entry={entry} />
+                <ToolCard key={entry.id} entry={entry} count={usage[entry.id] ?? 0} />
               ))}
             </div>
           </details>
