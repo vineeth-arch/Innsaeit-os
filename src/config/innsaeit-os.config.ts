@@ -220,6 +220,13 @@ export const tools: ToolEntry[] = [
     route: '/tools/case',
     badge: 'Runs in your browser',
   },
+  {
+    id: 'tool-hub',
+    name: 'Tool Hub',
+    description: '75+ agency utilities — image, colour, vector, barcode, PDF, packaging, typography, dev, calculators.',
+    route: '/tools',
+    badge: 'Search everything',
+  },
 ];
 
 export const platforms: ServiceEntry[] = [

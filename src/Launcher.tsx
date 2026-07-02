@@ -7,7 +7,8 @@ import {
   apiProviders,
   credentials,
 } from './config/innsaeit-os.config';
-import type { AppEntry, ServiceEntry, ToolEntry } from './types';
+import { toolsRegistry } from './config/tools-registry.config';
+import type { AppEntry, ServiceEntry, ToolEntry, ToolHubEntry } from './types';
 import AppCard from './components/AppCard';
 import ServiceCard from './components/ServiceCard';
 import SearchBar from './components/SearchBar';
@@ -34,6 +35,10 @@ function serviceHaystack(s: ServiceEntry): string {
 
 function toolHaystack(t: ToolEntry): string {
   return [t.name, t.description, t.badge ?? ''].join(' ').toLowerCase();
+}
+
+function registryHaystack(t: ToolHubEntry): string {
+  return [t.name, t.description, t.category, ...(t.keywords ?? [])].join(' ').toLowerCase();
 }
 
 /** Group client apps by `client`, preserving first-seen order. */
@@ -72,11 +77,8 @@ function Section({
 }
 
 function ToolCard({ tool }: { tool: ToolEntry }) {
-  return (
-    <Link
-      to={tool.route}
-      className="flex flex-col gap-3 rounded-xl border border-subtle bg-subtle p-5 hover:border-brand-default transition-colors"
-    >
+  const body = (
+    <>
       <h3 className="text-xl font-extrabold text-emphasis leading-[0.95]">{tool.name}</h3>
       <p className="text-sm text-subtle leading-relaxed flex-1">{tool.description}</p>
       <div className="flex items-center justify-between gap-2">
@@ -84,14 +86,58 @@ function ToolCard({ tool }: { tool: ToolEntry }) {
           <span className="text-[11px] font-semibold text-brand-default">🔒 {tool.badge}</span>
         )}
         <span className="tap px-3 rounded-lg bg-brand-default text-brand font-bold text-sm ml-auto">
-          Open →
+          {tool.url ? 'Open ↗' : 'Open →'}
         </span>
       </div>
+    </>
+  );
+
+  const className =
+    'flex flex-col gap-3 rounded-xl border border-subtle bg-subtle p-5 hover:border-brand-default transition-colors';
+
+  if (tool.url) {
+    return (
+      <a href={tool.url} target="_blank" rel="noopener noreferrer" className={className}>
+        {body}
+      </a>
+    );
+  }
+
+  return (
+    <Link to={tool.route!} className={className}>
+      {body}
     </Link>
   );
 }
 
+function RegistryHitCard({ entry }: { entry: ToolHubEntry }) {
+  const className =
+    'flex flex-col gap-1 rounded-lg border border-subtle bg-subtle px-3 py-2 hover:border-brand-default transition-colors';
+  const body = (
+    <>
+      <span className="text-sm font-bold text-emphasis">{entry.name}</span>
+      <span className="text-xs text-muted line-clamp-1">{entry.description}</span>
+    </>
+  );
+  if (entry.status === 'built' && entry.route) {
+    return (
+      <Link to={entry.route} className={className}>
+        {body}
+      </Link>
+    );
+  }
+  if (entry.url) {
+    return (
+      <a href={entry.url} target="_blank" rel="noopener noreferrer" className={className}>
+        {body}
+      </a>
+    );
+  }
+  return null; // backlog entries aren't clickable, skip in the deep-search strip
+}
+
 const GRID = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4';
+const REGISTRY_HIT_CAP = 6;
 
 export default function Launcher() {
   const [query, setQuery] = useState('');
@@ -108,6 +154,11 @@ export default function Launcher() {
     };
   }, [q]);
 
+  const registryHits = useMemo(() => {
+    if (!q) return [];
+    return toolsRegistry.filter((t) => t.status !== 'backlog' && registryHaystack(t).includes(q));
+  }, [q]);
+
   const operatingApps = filtered.apps.filter((a) => a.group === 'operating');
   const clientGroups = groupByClient(
     filtered.apps.filter((a) => a.group === 'client'),
@@ -118,7 +169,8 @@ export default function Launcher() {
     filtered.tools.length +
     filtered.platforms.length +
     filtered.apiProviders.length +
-    filtered.credentials.length;
+    filtered.credentials.length +
+    registryHits.length;
 
   return (
     <div className="min-h-dvh px-4 pb-24 max-w-6xl mx-auto">
@@ -178,6 +230,24 @@ export default function Launcher() {
               <ToolCard key={t.id} tool={t} />
             ))}
           </div>
+        </Section>
+      )}
+
+      {registryHits.length > 0 && (
+        <Section title="Also in the Tool Hub" subtitle={`${registryHits.length} match${registryHits.length === 1 ? '' : 'es'}`}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+            {registryHits.slice(0, REGISTRY_HIT_CAP).map((entry) => (
+              <RegistryHitCard key={entry.id} entry={entry} />
+            ))}
+          </div>
+          {registryHits.length > REGISTRY_HIT_CAP && (
+            <Link
+              to={`/tools?q=${encodeURIComponent(query)}`}
+              className="tap mt-3 inline-flex text-sm font-semibold text-brand-default hover:underline"
+            >
+              See all {registryHits.length} in Tool Hub →
+            </Link>
+          )}
         </Section>
       )}
 
