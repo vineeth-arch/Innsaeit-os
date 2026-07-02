@@ -120,6 +120,7 @@ function ToolCard({ entry }: { entry: ToolHubEntry }) {
       <ToolCardBody entry={entry} />
       <span className="mt-auto text-xs text-muted">
         On the roadmap{entry.effort ? ` · build effort ${entry.effort}/5` : ''}
+        {entry.needs === 'compute' ? ' · needs a backend' : ''}
       </span>
     </article>
   );

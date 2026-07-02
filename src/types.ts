@@ -85,6 +85,8 @@ export type ToolHubEntry = {
   keywords?: string[];
   /** How hard to build as a web tool (1=trivial..5=very hard). Only set on 'backlog' entries. */
   effort?: 1 | 2 | 3 | 4 | 5;
+  /** Why a 'backlog' entry isn't built yet: 'browser' = buildable client-side later, 'compute' = needs a real backend. */
+  needs?: 'browser' | 'compute';
 };
 
 export type AnyEntry = AppEntry | ServiceEntry | ToolEntry | ToolHubEntry;

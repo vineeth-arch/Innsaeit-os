@@ -5,6 +5,7 @@ import ThemeToggle from './ThemeToggle';
 const TABS = [
   { to: '/', label: 'Home', end: true },
   { to: '/tools', label: 'Tool Hub', end: false },
+  { to: '/settings', label: 'Settings', end: false },
 ];
 
 export default function AppShell() {
